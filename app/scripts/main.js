@@ -6,9 +6,11 @@ require.config({
     lib: 'lib',
     engine: 'lib/engine',
     render: 'lib/renderer',
-    core: 'lib/util'
+    core: 'lib/util',
+    scene: 'lib/scene'
   }
 });
 
 require(['app'], function(app) {
+	window.app = app;
 });

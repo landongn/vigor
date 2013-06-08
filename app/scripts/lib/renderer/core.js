@@ -1,30 +1,48 @@
 define(
 
 	[
-		'core/entity'
+		'core/entity',
+		'render/bundle',
 	],
 
-	function (Entity){
+	function (Entity, Package){
 		/* jshint eqeqeq:false, noempty:false, eqnull:true, globals:define window */
 
 		"use strict";
+		(function() {
+    var lastTime = 0;
+    var vendors = ['webkit', 'moz'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame =
+          window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+		}());
 
 		function Renderer(args) {
 			_.extend(this, args);
-
-			cq().appendTo('body');
-
-			requestAnimationFrame(this.step);
+			this.frame = cq("#screen");
+            this.frame.appendTo('body');
+			this.frame.fillStyle('#'+Math.floor(Math.random()*16777215).toString(16)).fillRect(0, 0, window.innerWidth, window.innerHeight);
+            this.currentFrame = null;
 		}
 
 		Renderer.prototype.__proto__ = Entity.prototype;
-		Renderer.prototype.step = function (delta) {
-
-		};
-		Renderer.prototype.prerender = function (delta) {};
-		Renderer.prototype.render = function(delta) {};
-		Renderer.prototype.postrender = function(delta) {};
-		Renderer.prototype.cleanup = function() {};
 
 		return Renderer;
 });

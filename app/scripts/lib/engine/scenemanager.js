@@ -7,10 +7,11 @@
 define(
 
 	[
-		'core/entity'
+		'core/entity',
+		'render/core',
 	],
 
-	function (Entity){
+	function (Entity, Renderer){
 		/* jshint eqeqeq:false, noempty:false, eqnull:true, globals:define window */
 
 		"use strict";
@@ -65,7 +66,15 @@ define(
 		};
 
 		SceneManager.prototype.load = function (scene) {
+			if (_.indexOf(this.sceneIndex, scene)) {
+				Renderer.transition(this.scenes[this.sceneIndex[scene]]);
+			}
+		};
 
+		SceneManager.destroy = function () {
+			Engine.disconnect(this);
+			this.sceneIndex = null;
+			this.scenes = null;
 		};
 
 		return SceneManager;
